@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <audio src="http://localhost:3000/song/7983" preload="metadata" controls></audio>
+    
+    <button id="skip">Skip</button>
+    <input type="text" placeholder="search" id="search-box"/>
+    <button onclick="search()">search</button>
+    <ul id="songList"></ul>
+    <script>
+        const audio = document.querySelector('audio')
+        async function search(){
+            const searchQuery = document.querySelector('#search-box').value
+            const response = await fetch(`http://localhost:3000/search?q=${searchQuery}`)
+            const data = await response.json()
+            songList.innerHTML = ""
+            data.map(song => {
+                const li = document.createElement('li')
+                li.onclick = () => {
+                    audio.src = "http://localhost:3000/song/" + song.id
+                    audio.play()
+                }
+                li.textContent = song.title
+                const img = document.createElement('img')
+                img.src = song.coverSrc || ""
+                img.width=40
+                img.height=40
+                li.appendChild(img)
+                songList.appendChild(li)
+            })
+        }
+        (async () => {
+            const r = await fetch('http://localhost:3000/albums/1392')
+            const d = await r.json()
+            console.log(d)
+            const response = await fetch('http://localhost:3000/albums/fresh')
+            const data = await response.json()
+            data.map(album => {
+                const a = document.createElement('a')
+                a.href = album.href
+                const li = document.createElement('li')
+                li.textContent = album.title
+                const img = document.createElement('img')
+                img.src = album.coverSrc
+                img.width=40
+                a.append(li)
+                li.appendChild(img)
+                songList.appendChild(a)
+            })
+        })()
+    </script>
+</body>
+</html>
