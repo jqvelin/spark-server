@@ -1,5 +1,5 @@
-import { Album } from "../model/album/album.types"
-import { albumSchema } from "../model/album/albumSchema"
+import { Album } from "../../types/album/album.types"
+import { albumSchema } from "../../types/album/albumSchema"
 
 export const parseFreshAlbumDataFromElement = (element: Element): Album => {
     const id = element.querySelector("a.album-card__image")?.getAttribute("href")?.slice(8)

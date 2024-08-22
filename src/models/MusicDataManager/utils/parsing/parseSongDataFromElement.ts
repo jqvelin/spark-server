@@ -1,5 +1,5 @@
-import { Song } from "../model/song/song.types"
-import { songSchema } from "../model/song/songSchema"
+import { Song } from "../../types/song/song.types"
+import { songSchema } from "../../types/song/songSchema"
 
 export const parseSongDataFromElement = (element: Element): Song => {
     const id = element.querySelector(".track__user-panel")?.getAttribute("data-js-id")

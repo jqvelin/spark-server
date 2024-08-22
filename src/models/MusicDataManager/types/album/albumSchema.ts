@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { Song } from "../song/song.types";
 import { songSchema } from "../song/songSchema";
 
 export const albumSchema = z.object({

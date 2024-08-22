@@ -6,7 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    <audio src="http://localhost:3000/song/7983" preload="metadata" controls></audio>
+    <audio src="http://localhost:3000/songs/7983" controls></audio>
     
     <button id="skip">Skip</button>
     <input type="text" placeholder="search" id="search-box"/>
@@ -22,7 +22,8 @@
             data.map(song => {
                 const li = document.createElement('li')
                 li.onclick = () => {
-                    audio.src = "http://localhost:3000/song/" + song.id
+                    console.log(song.id)
+                    audio.src = "http://localhost:3000/songs/" + song.id
                     audio.play()
                 }
                 li.textContent = song.title
@@ -47,7 +48,7 @@
                 li.textContent = album.title
                 const img = document.createElement('img')
                 img.src = album.coverSrc
-                img.width=40
+                img.width=100
                 a.append(li)
                 li.appendChild(img)
                 songList.appendChild(a)
