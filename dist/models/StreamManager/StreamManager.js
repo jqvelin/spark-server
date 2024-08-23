@@ -37,11 +37,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StreamManager = void 0;
 const axios_1 = __importDefault(require("axios"));
-const isValidUrl_1 = require("../../lib/isValidUrl");
+const isUrlValid_1 = require("../../lib/isUrlValid");
 const stream = __importStar(require("stream"));
 class StreamManager {
     constructor(BASE_URL) {
-        if (!(0, isValidUrl_1.isValidUrl)(BASE_URL)) {
+        if (!(0, isUrlValid_1.isUrlValid)(BASE_URL)) {
             throw new Error("Invalid BASE_URL");
         }
         else {

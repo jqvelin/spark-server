@@ -11,7 +11,10 @@
     <button id="skip">Skip</button>
     <input type="text" placeholder="search" id="search-box"/>
     <button onclick="search()">search</button>
+    <label>Songs:</label>
     <ul id="songList"></ul>
+    <label>Artists:</label>
+    <ul id="artistList"></ul>
     <script>
         const audio = document.querySelector('audio')
         async function search(){
@@ -19,29 +22,35 @@
             const response = await fetch(`http://localhost:3000/search?q=${searchQuery}`)
             const data = await response.json()
             songList.innerHTML = ""
-            data.map(song => {
-                const li = document.createElement('li')
-                li.onclick = () => {
+            data.songs.map(song => {
+                const a = document.createElement('a')
+                a.onclick = () => {
                     console.log(song.id)
                     audio.src = "http://localhost:3000/songs/" + song.id
                     audio.play()
                 }
-                li.textContent = song.title
+                a.textContent = song.title
+                a.href = "https://dl2.mp3party.net/download/" + song.id
                 const img = document.createElement('img')
                 img.src = song.coverSrc || ""
                 img.width=40
                 img.height=40
-                li.appendChild(img)
-                songList.appendChild(li)
+                a.appendChild(img)
+                songList.appendChild(a)
+            })
+            data.artists.map(artist => {
+                const li = document.createElement('li')
+                li.textContent = artist.name
+                const a = document.createElement('a')
+                a.href = artist.href
+                li.appendChild(a)
+                artistList.appendChild(li)
             })
         }
         (async () => {
-            const r = await fetch('http://localhost:3000/albums/1392')
-            const d = await r.json()
-            console.log(d)
-            const response = await fetch('http://localhost:3000/albums/fresh')
+            const response = await fetch('http://localhost:3000/albums/1369')
             const data = await response.json()
-            data.map(album => {
+            data.songs.map(album => {
                 const a = document.createElement('a')
                 a.href = album.href
                 const li = document.createElement('li')

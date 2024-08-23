@@ -1,12 +1,12 @@
 import axios from "axios";
 import type { Response } from "express";
-import { isValidUrl } from "../../lib/isValidUrl"
+import { isUrlValid } from "../../lib/isUrlValid"
 import * as stream from "stream"
 
 export class StreamManager {
     BASE_URL: string
     constructor(BASE_URL: string) {
-        if (!isValidUrl(BASE_URL)) {
+        if (!isUrlValid(BASE_URL)) {
             throw new Error("Invalid BASE_URL")
         } else {
             this.BASE_URL = BASE_URL

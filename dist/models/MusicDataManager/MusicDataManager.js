@@ -14,13 +14,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MusicDataManager = void 0;
 const axios_1 = __importDefault(require("axios"));
-const isValidUrl_1 = require("../../lib/isValidUrl");
+const isUrlValid_1 = require("../../lib/isUrlValid");
 const parseSongDataFromElement_1 = require("./utils/parsing/parseSongDataFromElement");
 const domParser_1 = require("../../lib/domParser");
 const parseFreshAlbumDataFromElement_1 = require("./utils/parsing/parseFreshAlbumDataFromElement");
+const parseArtistSearchDataFromElement_1 = require("./utils/parsing/parseArtistSearchDataFromElement");
+const parseAlbumDataFromElement_1 = require("./utils/parsing/parseAlbumDataFromElement");
 class MusicDataManager {
     constructor(BASE_URL) {
-        if (!(0, isValidUrl_1.isValidUrl)(BASE_URL)) {
+        if (!(0, isUrlValid_1.isUrlValid)(BASE_URL)) {
             throw new Error("Invalid BASE_URL");
         }
         else {
@@ -79,28 +81,13 @@ class MusicDataManager {
     }
     getAlbumDataById(albumId) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a, _b, _c, _d, _e;
             try {
                 const html = yield axios_1.default.get(`${this.BASE_URL}/albums/${albumId}`);
                 const dom = (0, domParser_1.parseDom)(html.data);
-                const title = (_b = (_a = dom === null || dom === void 0 ? void 0 : dom.querySelector(".page__title.page__title_album")) === null || _a === void 0 ? void 0 : _a.textContent) === null || _b === void 0 ? void 0 : _b.trim();
-                const artist = (_d = (_c = dom === null || dom === void 0 ? void 0 : dom.querySelector(".same-artist__item a")) === null || _c === void 0 ? void 0 : _c.textContent) === null || _d === void 0 ? void 0 : _d.trim();
-                const coverSrc = (_e = dom === null || dom === void 0 ? void 0 : dom.querySelector("img.page__img")) === null || _e === void 0 ? void 0 : _e.getAttribute("src");
-                const songs = [];
-                const songElements = dom === null || dom === void 0 ? void 0 : dom.querySelectorAll('.playlist .track.song-item');
-                if (!songElements)
+                const albumElement = dom === null || dom === void 0 ? void 0 : dom.querySelector(".page.page_album");
+                if (!albumElement)
                     return;
-                for (let i = 0; i < songElements.length; i++) {
-                    const song = (0, parseSongDataFromElement_1.parseSongDataFromElement)(songElements[i]);
-                    songs.push(song);
-                }
-                const album = {
-                    id: albumId,
-                    coverSrc,
-                    title,
-                    artist,
-                    songs,
-                };
+                const album = Object.assign(Object.assign({}, (0, parseAlbumDataFromElement_1.parseAlbumDataFromElement)(albumElement)), { id: albumId });
                 return album;
             }
             catch (e) {
@@ -116,10 +103,20 @@ class MusicDataManager {
                 const songElements = dom === null || dom === void 0 ? void 0 : dom.querySelectorAll(".playlist .track.song-item");
                 if (!songElements)
                     return;
-                const searchResults = [];
+                const searchResults = {
+                    songs: [],
+                    artists: []
+                };
                 for (let i = 0; i < songElements.length; i++) {
                     const song = (0, parseSongDataFromElement_1.parseSongDataFromElement)(songElements[i]);
-                    searchResults.push(song);
+                    searchResults.songs.push(song);
+                }
+                const artistElements = dom === null || dom === void 0 ? void 0 : dom.querySelectorAll(".artist-item");
+                if (!artistElements)
+                    return;
+                for (let i = 0; i < (artistElements === null || artistElements === void 0 ? void 0 : artistElements.length); i++) {
+                    const artist = (0, parseArtistSearchDataFromElement_1.parseArtistSearchDataFromElement)(artistElements[i]);
+                    searchResults.artists.push(artist);
                 }
                 return searchResults;
             }
