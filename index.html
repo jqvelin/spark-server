@@ -3,18 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            padding: 8px;
+        }
+
+        #audio {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50%;
+        }
+
+        .search-section {
+            margin-bottom: 1rem;
+        }
+
+        .album-data {
+            margin-bottom: 16px;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+    
     <title>Document</title>
 </head>
 <body>
-    <audio src="http://localhost:3000/songs/7983" controls></audio>
+    <div class="search-section">
+        <input type="text" placeholder="search" id="search-box"/>
+        <button onclick="search()">search</button>
+    </div>
     
-    <button id="skip">Skip</button>
-    <input type="text" placeholder="search" id="search-box"/>
-    <button onclick="search()">search</button>
+    <div class="album-data row">
+        <img id="cover" />
+        <div class="column" >
+            <h1 id="h1"></h1>
+            <h2 id="h2"></h2>
+            <p id="genres"></p>
+        </div>
+    </div>
+    
     <label>Songs:</label>
     <ul id="songList"></ul>
     <label>Artists:</label>
     <ul id="artistList"></ul>
+    <label>Albums:</label>
+    <ul id="albumList"></ul>
+    <audio id="audio" src="http://localhost:3000/songs/7983" controls></audio>
     <script>
         const audio = document.querySelector('audio')
         async function search(){
@@ -46,21 +99,32 @@
                 li.appendChild(a)
                 artistList.appendChild(li)
             })
+            data.albums.map(album => {
+                const li = document.createElement('li')
+                li.textContent = album.title
+                const a = document.createElement('a')
+                a.href = album.href
+                li.appendChild(a)
+                albumList.appendChild(li)
+            })
         }
         (async () => {
-            const response = await fetch('http://localhost:3000/albums/1369')
+            const response = await fetch('http://localhost:3000/albums/834')
             const data = await response.json()
+            h1.textContent = data.title
+            h2.textContent = data.artist
+            cover.src = data.coverSrc
             data.songs.map(album => {
                 const a = document.createElement('a')
                 a.href = album.href
                 const li = document.createElement('li')
                 li.textContent = album.title
-                const img = document.createElement('img')
-                img.src = album.coverSrc
-                img.width=100
+                
                 a.append(li)
-                li.appendChild(img)
                 songList.appendChild(a)
+            })
+            data.genres.map(genre => {
+                genres.textContent += genre + " "
             })
         })()
     </script>

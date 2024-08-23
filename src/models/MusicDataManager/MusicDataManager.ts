@@ -4,10 +4,11 @@ import { Song, SongGroups, SongGroupTitles } from "./types/song/song.types"
 import { parseSongDataFromElement } from "./utils/parsing/parseSongDataFromElement"
 import { parseDom } from "../../lib/domParser"
 import { Album } from "./types/album/album.types"
-import { parseFreshAlbumDataFromElement } from "./utils/parsing/parseFreshAlbumDataFromElement"
 import { Artist } from "./types/artist/artist.types"
 import { parseArtistSearchDataFromElement } from "./utils/parsing/parseArtistSearchDataFromElement"
 import { parseAlbumDataFromElement } from "./utils/parsing/parseAlbumDataFromElement"
+import { parseArtistDataFromElement } from "./utils/parsing/parseArtistDataFromElement"
+import { parseAlbumCardDataFromElement } from "./utils/parsing/parseAlbumCardDataFromElement"
 
 export class MusicDataManager {
     BASE_URL: string
@@ -60,11 +61,29 @@ export class MusicDataManager {
             if (!albumElements) return 
             
             for (let i = 0; i < albumElements.length; i++) {
-                const album = parseFreshAlbumDataFromElement(albumElements[i])
+                const album = parseAlbumCardDataFromElement(albumElements[i])
                 albums.push(album)
             }  
 
             return albums
+        } catch (e) {
+            return null
+        }
+    }
+
+    async getArtistDataById(artistId: string): Promise<Artist | null | undefined> {
+        try {
+            const html = await axios.get(`${this.BASE_URL}/artist/${artistId}`)
+            const dom = parseDom(html.data)
+            const artistElement = dom?.querySelector(".artist-page.page")
+            if (!artistElement) return
+            
+            const artist: Artist = {
+                ...parseArtistDataFromElement(artistElement),
+                id: artistId
+            }
+            
+            return artist            
         } catch (e) {
             return null
         }
@@ -100,10 +119,12 @@ export class MusicDataManager {
     
             const searchResults: {
                 songs: Song[],
-                artists: Artist[]
+                artists: Artist[],
+                albums: Album[]
             } = {
                 songs: [],
-                artists: []
+                artists: [],
+                albums: []
             }
     
             for (let i = 0; i < songElements.length; i++) {
@@ -118,7 +139,31 @@ export class MusicDataManager {
                 const artist = parseArtistSearchDataFromElement(artistElements[i])
                 searchResults.artists.push(artist)
             }
-    
+
+            const albumElementsContainer = dom?.querySelectorAll(".col-xs-12")[dom?.querySelectorAll(".col-xs-12").length - 1]
+            if (!albumElementsContainer) return
+
+            const albumElements = albumElementsContainer?.querySelectorAll(".collection-item a")
+            let requests = []
+            for (let i = 0; i < albumElements?.length; i++) {
+                requests.push(axios.get(this.BASE_URL + albumElements[i].getAttribute("href")))
+            }
+            const albumResponses = await Promise.all(requests)
+
+            for (let i = 0; i < albumResponses.length; i++) {
+                const albumResponseData = albumResponses[i].data
+                const albumElement = parseDom(albumResponseData)?.querySelector(".page.page_album")
+                if (!albumElement) continue
+                const album = parseAlbumDataFromElement(albumElement)
+
+                const albumId = albumElements[i].getAttribute("href")?.slice(8)
+                if (!albumId) continue
+                searchResults.albums.push({
+                    id: albumId,
+                    ...album
+                })
+            }
+
             return searchResults
         } catch (e) {
             return null
