@@ -132,23 +132,36 @@ export class MusicDataManager {
                 searchResults.songs.push(song)
             }
 
-            const artistElements = dom?.querySelectorAll(".artist-item")
+            const artistElements = dom?.querySelectorAll(".artist-item a")
             if (!artistElements) return
 
+            let artistDataRequests = []
             for (let i = 0; i < artistElements?.length; i++) {
-                const artist = parseArtistSearchDataFromElement(artistElements[i])
-                searchResults.artists.push(artist)
+                artistDataRequests.push(axios.get(this.BASE_URL + artistElements[i].getAttribute("href")))
+            }
+            const artistResponses = await Promise.all(artistDataRequests)
+            for (let i = 0; i < artistResponses.length; i++) {
+                const artistResponseData = artistResponses[i].data
+                const artistElement = parseDom(artistResponseData)?.querySelector(".artist-page.page")
+                if (!artistElement) continue
+                const artist = parseArtistDataFromElement(artistElement)
+                const artistId = artistElements[i].getAttribute("href")?.slice(8)
+                if (!artistId) continue
+                searchResults.artists.push({
+                    id: artistId,
+                    ...artist
+                })
             }
 
             const albumElementsContainer = dom?.querySelectorAll(".col-xs-12")[dom?.querySelectorAll(".col-xs-12").length - 1]
             if (!albumElementsContainer) return
 
             const albumElements = albumElementsContainer?.querySelectorAll(".collection-item a")
-            let requests = []
+            let albumDataRequests = []
             for (let i = 0; i < albumElements?.length; i++) {
-                requests.push(axios.get(this.BASE_URL + albumElements[i].getAttribute("href")))
+                albumDataRequests.push(axios.get(this.BASE_URL + albumElements[i].getAttribute("href")))
             }
-            const albumResponses = await Promise.all(requests)
+            const albumResponses = await Promise.all(albumDataRequests)
 
             for (let i = 0; i < albumResponses.length; i++) {
                 const albumResponseData = albumResponses[i].data

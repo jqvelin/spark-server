@@ -17,7 +17,6 @@ const axios_1 = __importDefault(require("axios"));
 const isUrlValid_1 = require("../../lib/isUrlValid");
 const parseSongDataFromElement_1 = require("./utils/parsing/parseSongDataFromElement");
 const domParser_1 = require("../../lib/domParser");
-const parseArtistSearchDataFromElement_1 = require("./utils/parsing/parseArtistSearchDataFromElement");
 const parseAlbumDataFromElement_1 = require("./utils/parsing/parseAlbumDataFromElement");
 const parseArtistDataFromElement_1 = require("./utils/parsing/parseArtistDataFromElement");
 const parseAlbumCardDataFromElement_1 = require("./utils/parsing/parseAlbumCardDataFromElement");
@@ -114,7 +113,7 @@ class MusicDataManager {
     }
     getSearchResults(searchQuery) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
+            var _a, _b, _c, _d;
             try {
                 const html = yield axios_1.default.get(`${this.BASE_URL}/search?q=${searchQuery}`);
                 const dom = (0, domParser_1.parseDom)(html.data);
@@ -130,29 +129,41 @@ class MusicDataManager {
                     const song = (0, parseSongDataFromElement_1.parseSongDataFromElement)(songElements[i]);
                     searchResults.songs.push(song);
                 }
-                const artistElements = dom === null || dom === void 0 ? void 0 : dom.querySelectorAll(".artist-item");
+                const artistElements = dom === null || dom === void 0 ? void 0 : dom.querySelectorAll(".artist-item a");
                 if (!artistElements)
                     return;
+                let artistDataRequests = [];
                 for (let i = 0; i < (artistElements === null || artistElements === void 0 ? void 0 : artistElements.length); i++) {
-                    const artist = (0, parseArtistSearchDataFromElement_1.parseArtistSearchDataFromElement)(artistElements[i]);
-                    searchResults.artists.push(artist);
+                    artistDataRequests.push(axios_1.default.get(this.BASE_URL + artistElements[i].getAttribute("href")));
+                }
+                const artistResponses = yield Promise.all(artistDataRequests);
+                for (let i = 0; i < artistResponses.length; i++) {
+                    const artistResponseData = artistResponses[i].data;
+                    const artistElement = (_a = (0, domParser_1.parseDom)(artistResponseData)) === null || _a === void 0 ? void 0 : _a.querySelector(".artist-page.page");
+                    if (!artistElement)
+                        continue;
+                    const artist = (0, parseArtistDataFromElement_1.parseArtistDataFromElement)(artistElement);
+                    const artistId = (_b = artistElements[i].getAttribute("href")) === null || _b === void 0 ? void 0 : _b.slice(8);
+                    if (!artistId)
+                        continue;
+                    searchResults.artists.push(Object.assign({ id: artistId }, artist));
                 }
                 const albumElementsContainer = dom === null || dom === void 0 ? void 0 : dom.querySelectorAll(".col-xs-12")[(dom === null || dom === void 0 ? void 0 : dom.querySelectorAll(".col-xs-12").length) - 1];
                 if (!albumElementsContainer)
                     return;
                 const albumElements = albumElementsContainer === null || albumElementsContainer === void 0 ? void 0 : albumElementsContainer.querySelectorAll(".collection-item a");
-                let requests = [];
+                let albumDataRequests = [];
                 for (let i = 0; i < (albumElements === null || albumElements === void 0 ? void 0 : albumElements.length); i++) {
-                    requests.push(axios_1.default.get(this.BASE_URL + albumElements[i].getAttribute("href")));
+                    albumDataRequests.push(axios_1.default.get(this.BASE_URL + albumElements[i].getAttribute("href")));
                 }
-                const albumResponses = yield Promise.all(requests);
+                const albumResponses = yield Promise.all(albumDataRequests);
                 for (let i = 0; i < albumResponses.length; i++) {
                     const albumResponseData = albumResponses[i].data;
-                    const albumElement = (_a = (0, domParser_1.parseDom)(albumResponseData)) === null || _a === void 0 ? void 0 : _a.querySelector(".page.page_album");
+                    const albumElement = (_c = (0, domParser_1.parseDom)(albumResponseData)) === null || _c === void 0 ? void 0 : _c.querySelector(".page.page_album");
                     if (!albumElement)
                         continue;
                     const album = (0, parseAlbumDataFromElement_1.parseAlbumDataFromElement)(albumElement);
-                    const albumId = (_b = albumElements[i].getAttribute("href")) === null || _b === void 0 ? void 0 : _b.slice(8);
+                    const albumId = (_d = albumElements[i].getAttribute("href")) === null || _d === void 0 ? void 0 : _d.slice(8);
                     if (!albumId)
                         continue;
                     searchResults.albums.push(Object.assign({ id: albumId }, album));

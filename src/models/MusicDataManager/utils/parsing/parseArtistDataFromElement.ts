@@ -17,8 +17,17 @@ export const parseArtistDataFromElement = (element: Element): Omit<Artist, "id">
     }
 
     const albums: Album[] = []
-    const albumElements = element.querySelectorAll('.album-card')
 
+    // First album element appears on desktop, the second one - on mobile
+    const albumElementsWithDuplicates = Array.from(element.querySelectorAll('.album-card'))
+    const albumElements = albumElementsWithDuplicates.reduce((acc, albumElement) => {
+        const accIds = acc.map(accElement => accElement.querySelector("a.album-card__image")?.getAttribute("href")?.slice(8))
+        const albumElementId = albumElement.querySelector("a.album-card__image")?.getAttribute("href")?.slice(8)
+        if (!albumElementId || !accIds.includes(albumElementId)) {
+            acc.push(albumElement)
+        }
+        return acc
+    }, [] as Element[])
     for (let i = 0; i < albumElements.length; i++) {
         const album = parseAlbumCardDataFromElement(albumElements[i])
         albums.push(album)
