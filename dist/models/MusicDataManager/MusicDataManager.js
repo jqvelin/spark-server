@@ -19,7 +19,6 @@ const parseSongDataFromElement_1 = require("./utils/parsing/parseSongDataFromEle
 const domParser_1 = require("../../lib/domParser");
 const parseAlbumDataFromElement_1 = require("./utils/parsing/parseAlbumDataFromElement");
 const parseArtistDataFromElement_1 = require("./utils/parsing/parseArtistDataFromElement");
-const parseAlbumCardDataFromElement_1 = require("./utils/parsing/parseAlbumCardDataFromElement");
 class MusicDataManager {
     constructor(BASE_URL) {
         if (!(0, isUrlValid_1.isUrlValid)(BASE_URL)) {
@@ -68,8 +67,8 @@ class MusicDataManager {
                 const albumElements = dom === null || dom === void 0 ? void 0 : dom.querySelectorAll(".album-card");
                 if (!albumElements)
                     return;
-                for (let i = 0; i < albumElements.length; i++) {
-                    const album = (0, parseAlbumCardDataFromElement_1.parseAlbumCardDataFromElement)(albumElements[i]);
+                for (let i = 0; i < (albumElements === null || albumElements === void 0 ? void 0 : albumElements.length); i++) {
+                    const album = (0, parseAlbumDataFromElement_1.parseAlbumDataFromElement)(albumElements[i]);
                     albums.push(album);
                 }
                 return albums;
