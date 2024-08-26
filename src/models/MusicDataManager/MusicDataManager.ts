@@ -5,10 +5,8 @@ import { parseSongDataFromElement } from "./utils/parsing/parseSongDataFromEleme
 import { parseDom } from "../../lib/domParser"
 import { Album } from "./types/album/album.types"
 import { Artist } from "./types/artist/artist.types"
-import { parseArtistSearchDataFromElement } from "./utils/parsing/parseArtistSearchDataFromElement"
 import { parseAlbumDataFromElement } from "./utils/parsing/parseAlbumDataFromElement"
 import { parseArtistDataFromElement } from "./utils/parsing/parseArtistDataFromElement"
-import { parseAlbumCardDataFromElement } from "./utils/parsing/parseAlbumCardDataFromElement"
 
 export class MusicDataManager {
     BASE_URL: string
@@ -59,12 +57,12 @@ export class MusicDataManager {
     
             const albumElements = dom?.querySelectorAll(".album-card")
             if (!albumElements) return 
-            
-            for (let i = 0; i < albumElements.length; i++) {
-                const album = parseAlbumCardDataFromElement(albumElements[i])
-                albums.push(album)
-            }  
 
+            for (let i = 0; i < albumElements?.length; i++) {
+                const album = parseAlbumDataFromElement(albumElements[i])
+                albums.push(album as Album)
+            }
+            
             return albums
         } catch (e) {
             return null

@@ -1,7 +1,7 @@
 import { Album } from "../../types/album/album.types"
 import { Artist } from "../../types/artist/artist.types"
 import { Song } from "../../types/song/song.types"
-import { parseAlbumCardDataFromElement } from "./parseAlbumCardDataFromElement"
+import { parseAlbumDataFromElement } from "./parseAlbumDataFromElement"
 import { parseSongDataFromElement } from "./parseSongDataFromElement"
 
 export const parseArtistDataFromElement = (element: Element): Omit<Artist, "id"> => {
@@ -29,8 +29,11 @@ export const parseArtistDataFromElement = (element: Element): Omit<Artist, "id">
         return acc
     }, [] as Element[])
     for (let i = 0; i < albumElements.length; i++) {
-        const album = parseAlbumCardDataFromElement(albumElements[i])
-        albums.push(album)
+        const album = parseAlbumDataFromElement(albumElements[i])
+        albums.push({
+            id: albumElements[i].querySelector("a.album-card__image")?.getAttribute("href")?.slice(8) as string,
+            ...album
+        })
     }
     
     return {
@@ -39,5 +42,4 @@ export const parseArtistDataFromElement = (element: Element): Omit<Artist, "id">
         songs,
         albums
     }
-
 }

@@ -69,65 +69,36 @@
     <ul id="albumList"></ul>
     <audio id="audio" src="http://localhost:3000/songs/7983" controls></audio>
     <script>
+        loadFreshAlbums()
+        loadHomepageSongs()
+        loadAlbum1369()
+        loadSearchResults()
+
         const audio = document.querySelector('audio')
-        async function search(){
-            const searchQuery = document.querySelector('#search-box').value
-            const response = await fetch(`http://localhost:3000/search?q=${searchQuery}`)
-            const data = await response.json()
-            console.log(data)
-            songList.innerHTML = ""
-            data.songs.map(song => {
-                const a = document.createElement('a')
-                a.onclick = () => {
-                    console.log(song.id)
-                    audio.src = "http://localhost:3000/songs/" + song.id
-                    audio.play()
-                }
-                a.textContent = song.title
-                a.href = "https://dl2.mp3party.net/download/" + song.id
-                const img = document.createElement('img')
-                img.src = song.coverSrc || ""
-                img.width=40
-                img.height=40
-                a.appendChild(img)
-                songList.appendChild(a)
-            })
-            data.artists.map(artist => {
-                const li = document.createElement('li')
-                li.textContent = artist.name
-                const a = document.createElement('a')
-                a.href = artist.href
-                li.appendChild(a)
-                artistList.appendChild(li)
-            })
-            data.albums.map(album => {
-                const li = document.createElement('li')
-                li.textContent = album.title
-                const a = document.createElement('a')
-                a.href = album.href
-                li.appendChild(a)
-                albumList.appendChild(li)
-            })
+
+        async function loadFreshAlbums() {
+            const response = await fetch('http://localhost:3000/albums')
+            const freshAlbums = await response.json()
+            console.log("Fresh albums: ", freshAlbums)
         }
-        (async () => {
-            const response = await fetch('http://localhost:3000/albums/834')
-            const data = await response.json()
-            h1.textContent = data.title
-            h2.textContent = data.artist
-            cover.src = data.coverSrc
-            data.songs.map(album => {
-                const a = document.createElement('a')
-                a.href = album.href
-                const li = document.createElement('li')
-                li.textContent = album.title
-                
-                a.append(li)
-                songList.appendChild(a)
-            })
-            data.genres.map(genre => {
-                genres.textContent += genre + " "
-            })
-        })()
+
+        async function loadHomepageSongs() {
+            const response = await fetch('http://localhost:3000/songs')
+            const songs = await response.json()
+            console.log("Homepage songs: ", songs)
+        }
+
+        async function loadAlbum1369() {
+            const response = await fetch('http://localhost:3000/albums/1369')
+            const album = await response.json()
+            console.log("Album 1369: ", album)
+        }
+
+        async function loadSearchResults() {
+            const response = await fetch('http://localhost:3000/search?q=lana%20del%20rey')
+            const searchResults = await response.json()
+            console.log("Search results: ", searchResults)
+        }
     </script>
 </body>
 </html>

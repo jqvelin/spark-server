@@ -4,7 +4,7 @@ const router = express.Router()
 
 const musicDataManager = new MusicDataManager("https://mp3party.net")
 
-router.get('/fresh', async (_, res) => {
+router.get('/', async (_, res) => {
     const albums = await musicDataManager.getFreshAlbums()
     res.json(albums)
 })
