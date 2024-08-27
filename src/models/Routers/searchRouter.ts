@@ -2,7 +2,7 @@ import express from "express"
 import { MusicDataManager } from "../MusicDataManager/MusicDataManager"
 const router = express.Router()
 
-const musicDataManager = new MusicDataManager("https://mp3party.net")
+const musicDataManager = new MusicDataManager()
 
 router.get('/', async (req, res) => {
     const searchQuery = req.query.q

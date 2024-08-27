@@ -1,28 +1,19 @@
 import axios from "axios"
-import { isUrlValid } from "../../lib/isUrlValid"
 import { Song, SongGroups, SongGroupTitles } from "./types/song/song.types"
 import { parseSongDataFromElement } from "./utils/parsing/parseSongDataFromElement"
-import { parseDom } from "../../lib/domParser"
+import { domParser } from "../../lib/domParser"
 import { Album } from "./types/album/album.types"
 import { Artist } from "./types/artist/artist.types"
 import { parseAlbumDataFromElement } from "./utils/parsing/parseAlbumDataFromElement"
 import { parseArtistDataFromElement } from "./utils/parsing/parseArtistDataFromElement"
 
 export class MusicDataManager {
-    BASE_URL: string
-
-    constructor(BASE_URL: string){
-        if (!isUrlValid(BASE_URL)) {
-            throw new Error("Invalid BASE_URL")
-        } else {
-            this.BASE_URL = BASE_URL
-        }
-    }
+    BASE_URL = "https://mp3party.net/"
 
     async getHomepageSongs(): Promise<SongGroups | null | undefined> {
         try {
             const html = await axios.get(this.BASE_URL)
-            const dom = parseDom(html.data)
+            const dom = domParser(html.data)
             const songGroups: SongGroups = {
                 fresh: [],
                 trendingGlobal: [],
@@ -52,7 +43,7 @@ export class MusicDataManager {
     async getFreshAlbums(): Promise<Album[] | null | undefined> {
         try {
             const html = await axios.get(this.BASE_URL)
-            const dom = parseDom(html.data)
+            const dom = domParser(html.data)
             const albums: Album[] = []
     
             const albumElements = dom?.querySelectorAll(".album-card")
@@ -72,7 +63,7 @@ export class MusicDataManager {
     async getArtistDataById(artistId: string): Promise<Artist | null | undefined> {
         try {
             const html = await axios.get(`${this.BASE_URL}/artist/${artistId}`)
-            const dom = parseDom(html.data)
+            const dom = domParser(html.data)
             const artistElement = dom?.querySelector(".artist-page.page")
             if (!artistElement) return
             
@@ -90,7 +81,7 @@ export class MusicDataManager {
     async getAlbumDataById(albumId: string): Promise<Album | null | undefined> {
         try {
             const html = await axios.get(`${this.BASE_URL}/albums/${albumId}`)
-            const dom = parseDom(html.data)
+            const dom = domParser(html.data)
             const albumElement = dom?.querySelector(".page.page_album")
             if (!albumElement) return
             
@@ -111,7 +102,7 @@ export class MusicDataManager {
     } | null | undefined> {
         try {
             const html = await axios.get(`${this.BASE_URL}/search?q=${searchQuery}`)
-            const dom = parseDom(html.data)
+            const dom = domParser(html.data)
             const songElements = dom?.querySelectorAll(".playlist .track.song-item")
             if (!songElements) return
     
@@ -140,7 +131,7 @@ export class MusicDataManager {
             const artistResponses = await Promise.all(artistDataRequests)
             for (let i = 0; i < artistResponses.length; i++) {
                 const artistResponseData = artistResponses[i].data
-                const artistElement = parseDom(artistResponseData)?.querySelector(".artist-page.page")
+                const artistElement = domParser(artistResponseData)?.querySelector(".artist-page.page")
                 if (!artistElement) continue
                 const artist = parseArtistDataFromElement(artistElement)
                 const artistId = artistElements[i].getAttribute("href")?.slice(8)
@@ -163,7 +154,7 @@ export class MusicDataManager {
 
             for (let i = 0; i < albumResponses.length; i++) {
                 const albumResponseData = albumResponses[i].data
-                const albumElement = parseDom(albumResponseData)?.querySelector(".page.page_album")
+                const albumElement = domParser(albumResponseData)?.querySelector(".page.page_album")
                 if (!albumElement) continue
                 const album = parseAlbumDataFromElement(albumElement)
 

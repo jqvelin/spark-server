@@ -2,7 +2,7 @@ import { MusicDataManager } from "../MusicDataManager/MusicDataManager"
 import express from "express"
 const router = express.Router()
 
-const musicDataManager = new MusicDataManager("https://mp3party.net")
+const musicDataManager = new MusicDataManager()
 
 router.get('/', async (_, res) => {
     const albums = await musicDataManager.getFreshAlbums()

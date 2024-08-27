@@ -37,16 +37,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StreamManager = void 0;
 const axios_1 = __importDefault(require("axios"));
-const isUrlValid_1 = require("../../lib/isUrlValid");
 const stream = __importStar(require("stream"));
 class StreamManager {
-    constructor(BASE_URL) {
-        if (!(0, isUrlValid_1.isUrlValid)(BASE_URL)) {
-            throw new Error("Invalid BASE_URL");
-        }
-        else {
-            this.BASE_URL = BASE_URL;
-        }
+    constructor() {
+        this.BASE_URL = "https://dl2.mp3party.net/online";
     }
     stream(songId, range, res) {
         return __awaiter(this, void 0, void 0, function* () {

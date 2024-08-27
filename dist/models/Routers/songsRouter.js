@@ -18,8 +18,8 @@ const express_1 = __importDefault(require("express"));
 const StreamManager_1 = require("../StreamManager/StreamManager");
 const router = express_1.default.Router();
 exports.songsRouter = router;
-const musicDataManager = new MusicDataManager_1.MusicDataManager("https://mp3party.net");
-const streamManager = new StreamManager_1.StreamManager("https://dl2.mp3party.net/online");
+const musicDataManager = new MusicDataManager_1.MusicDataManager();
+const streamManager = new StreamManager_1.StreamManager();
 router.get('/', (_, res) => __awaiter(void 0, void 0, void 0, function* () {
     const songs = yield musicDataManager.getHomepageSongs();
     res.json(songs);

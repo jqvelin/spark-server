@@ -14,25 +14,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MusicDataManager = void 0;
 const axios_1 = __importDefault(require("axios"));
-const isUrlValid_1 = require("../../lib/isUrlValid");
 const parseSongDataFromElement_1 = require("./utils/parsing/parseSongDataFromElement");
 const domParser_1 = require("../../lib/domParser");
 const parseAlbumDataFromElement_1 = require("./utils/parsing/parseAlbumDataFromElement");
 const parseArtistDataFromElement_1 = require("./utils/parsing/parseArtistDataFromElement");
 class MusicDataManager {
-    constructor(BASE_URL) {
-        if (!(0, isUrlValid_1.isUrlValid)(BASE_URL)) {
-            throw new Error("Invalid BASE_URL");
-        }
-        else {
-            this.BASE_URL = BASE_URL;
-        }
+    constructor() {
+        this.BASE_URL = "https://mp3party.net/";
     }
     getHomepageSongs() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const html = yield axios_1.default.get(this.BASE_URL);
-                const dom = (0, domParser_1.parseDom)(html.data);
+                const dom = (0, domParser_1.domParser)(html.data);
                 const songGroups = {
                     fresh: [],
                     trendingGlobal: [],
@@ -62,7 +56,7 @@ class MusicDataManager {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const html = yield axios_1.default.get(this.BASE_URL);
-                const dom = (0, domParser_1.parseDom)(html.data);
+                const dom = (0, domParser_1.domParser)(html.data);
                 const albums = [];
                 const albumElements = dom === null || dom === void 0 ? void 0 : dom.querySelectorAll(".album-card");
                 if (!albumElements)
@@ -82,7 +76,7 @@ class MusicDataManager {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const html = yield axios_1.default.get(`${this.BASE_URL}/artist/${artistId}`);
-                const dom = (0, domParser_1.parseDom)(html.data);
+                const dom = (0, domParser_1.domParser)(html.data);
                 const artistElement = dom === null || dom === void 0 ? void 0 : dom.querySelector(".artist-page.page");
                 if (!artistElement)
                     return;
@@ -98,7 +92,7 @@ class MusicDataManager {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const html = yield axios_1.default.get(`${this.BASE_URL}/albums/${albumId}`);
-                const dom = (0, domParser_1.parseDom)(html.data);
+                const dom = (0, domParser_1.domParser)(html.data);
                 const albumElement = dom === null || dom === void 0 ? void 0 : dom.querySelector(".page.page_album");
                 if (!albumElement)
                     return;
@@ -115,7 +109,7 @@ class MusicDataManager {
             var _a, _b, _c, _d;
             try {
                 const html = yield axios_1.default.get(`${this.BASE_URL}/search?q=${searchQuery}`);
-                const dom = (0, domParser_1.parseDom)(html.data);
+                const dom = (0, domParser_1.domParser)(html.data);
                 const songElements = dom === null || dom === void 0 ? void 0 : dom.querySelectorAll(".playlist .track.song-item");
                 if (!songElements)
                     return;
@@ -138,7 +132,7 @@ class MusicDataManager {
                 const artistResponses = yield Promise.all(artistDataRequests);
                 for (let i = 0; i < artistResponses.length; i++) {
                     const artistResponseData = artistResponses[i].data;
-                    const artistElement = (_a = (0, domParser_1.parseDom)(artistResponseData)) === null || _a === void 0 ? void 0 : _a.querySelector(".artist-page.page");
+                    const artistElement = (_a = (0, domParser_1.domParser)(artistResponseData)) === null || _a === void 0 ? void 0 : _a.querySelector(".artist-page.page");
                     if (!artistElement)
                         continue;
                     const artist = (0, parseArtistDataFromElement_1.parseArtistDataFromElement)(artistElement);
@@ -158,7 +152,7 @@ class MusicDataManager {
                 const albumResponses = yield Promise.all(albumDataRequests);
                 for (let i = 0; i < albumResponses.length; i++) {
                     const albumResponseData = albumResponses[i].data;
-                    const albumElement = (_c = (0, domParser_1.parseDom)(albumResponseData)) === null || _c === void 0 ? void 0 : _c.querySelector(".page.page_album");
+                    const albumElement = (_c = (0, domParser_1.domParser)(albumResponseData)) === null || _c === void 0 ? void 0 : _c.querySelector(".page.page_album");
                     if (!albumElement)
                         continue;
                     const album = (0, parseAlbumDataFromElement_1.parseAlbumDataFromElement)(albumElement);

@@ -17,7 +17,7 @@ const MusicDataManager_1 = require("../MusicDataManager/MusicDataManager");
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 exports.albumsRouter = router;
-const musicDataManager = new MusicDataManager_1.MusicDataManager("https://mp3party.net");
+const musicDataManager = new MusicDataManager_1.MusicDataManager();
 router.get('/', (_, res) => __awaiter(void 0, void 0, void 0, function* () {
     const albums = yield musicDataManager.getFreshAlbums();
     res.json(albums);

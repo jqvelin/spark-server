@@ -3,8 +3,8 @@ import express from "express"
 import { StreamManager } from "../StreamManager/StreamManager"
 const router = express.Router()
 
-const musicDataManager = new MusicDataManager("https://mp3party.net")
-const streamManager = new StreamManager("https://dl2.mp3party.net/online")
+const musicDataManager = new MusicDataManager()
+const streamManager = new StreamManager()
 
 router.get('/', async (_, res) => {
     const songs = await musicDataManager.getHomepageSongs()

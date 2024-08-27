@@ -1,7 +1,6 @@
-import jsdom from "jsdom"
-const { JSDOM } = jsdom
+import { JSDOM } from "jsdom"
 
-export const parseDom = (htmlAsString: string, querySelector?: string) => {
+export const domParser = (htmlAsString: string, querySelector?: string) => {
     const dom = new JSDOM(htmlAsString)
     if (querySelector) {
         return dom.window.document.querySelector(querySelector)

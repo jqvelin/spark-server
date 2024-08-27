@@ -1,17 +1,9 @@
 import axios from "axios";
 import type { Response } from "express";
-import { isUrlValid } from "../../lib/isUrlValid"
 import * as stream from "stream"
 
 export class StreamManager {
-    BASE_URL: string
-    constructor(BASE_URL: string) {
-        if (!isUrlValid(BASE_URL)) {
-            throw new Error("Invalid BASE_URL")
-        } else {
-            this.BASE_URL = BASE_URL
-        }
-    }
+    BASE_URL = "https://dl2.mp3party.net/online"
 
     async stream(songId: string, range: string, res: Response) {
         try {
