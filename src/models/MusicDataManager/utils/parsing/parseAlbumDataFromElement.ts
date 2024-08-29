@@ -35,6 +35,7 @@ export const parseAlbumDataFromElement = (element: Element): Omit<Album, "id"> =
         genres.push(genre)
     }
 
+    // Id is not present in DOM, but comes from parental method
     return albumSchema.omit({id: true}).parse({
         title,
         artist,

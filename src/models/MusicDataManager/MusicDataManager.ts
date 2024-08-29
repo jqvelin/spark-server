@@ -8,7 +8,7 @@ import { parseAlbumDataFromElement } from "./utils/parsing/parseAlbumDataFromEle
 import { parseArtistDataFromElement } from "./utils/parsing/parseArtistDataFromElement"
 
 export class MusicDataManager {
-    BASE_URL = "https://mp3party.net/"
+    BASE_URL = "https://mp3party.net"
 
     async getHomepageSongs(): Promise<SongGroups | null | undefined> {
         try {
@@ -62,17 +62,42 @@ export class MusicDataManager {
 
     async getArtistDataById(artistId: string): Promise<Artist | null | undefined> {
         try {
+            let artist: Artist = {
+                id: artistId,
+                name: "",
+                imageSrc: "",
+                songs: [],
+                albums: []
+            }
             const html = await axios.get(`${this.BASE_URL}/artist/${artistId}`)
             const dom = domParser(html.data)
-            const artistElement = dom?.querySelector(".artist-page.page")
-            if (!artistElement) return
-            
-            const artist: Artist = {
-                ...parseArtistDataFromElement(artistElement),
-                id: artistId
+            const pagesToParseQty = dom?.querySelectorAll("div[role='navigation'] .btn").length 
+                ? dom?.querySelectorAll("div[role='navigation'] .btn").length - 2 
+                : 1
+
+            let artistDataRequests = []
+
+            // Fetch is used here because of axios bug related to parsing circular structures
+            // https://github.com/axios/axios/issues/836
+            for (let i = 1; i <= pagesToParseQty; i++) {
+                artistDataRequests.push(fetch(`${this.BASE_URL}/artist/${artistId}?page=${i}`).then(r => r.text()))
             }
-            
-            return artist            
+
+            const artistResponses = await Promise.all(artistDataRequests)
+            for (let i = 0; i < artistResponses.length; i++) {
+                const artistResponse = artistResponses[i]
+                const artistElement = domParser(artistResponse)?.querySelector(".artist-page.page")
+                if (!artistElement) continue
+
+                const parsedArtistPageData = parseArtistDataFromElement(artistElement)
+                artist = {
+                    ...artist,
+                    ...parsedArtistPageData,
+                    songs: [...artist.songs, ...parsedArtistPageData.songs]
+                }
+            }
+
+            return artist
         } catch (e) {
             return null
         }

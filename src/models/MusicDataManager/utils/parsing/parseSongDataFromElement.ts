@@ -7,6 +7,7 @@ export const parseSongDataFromElement = (element: Element): Song => {
     const artist = element.querySelector(".track__user-panel")?.getAttribute("data-js-artist-name")
     const title = element.querySelector(".track__user-panel")?.getAttribute("data-js-song-title")
     const duration = element.querySelectorAll(".track__info-item")[0].textContent?.trim()
+    
     return songSchema.parse({
         id,
         coverSrc,

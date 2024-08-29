@@ -67,14 +67,42 @@
     <ul id="artistList"></ul>
     <label>Albums:</label>
     <ul id="albumList"></ul>
-    <audio id="audio" src="http://localhost:3000/songs/10657554" controls></audio>
+    <audio id="audio" preload="metadata" src="http://localhost:3000/songs/9801605" controls></audio>
     <script>
         loadFreshAlbums()
         loadHomepageSongs()
         loadAlbum1369()
+        loadArtistData()
         loadSearchResults()
 
+        const playlist = [
+            "http://localhost:3000/songs/9801605",
+            "http://localhost:3000/songs/10288834",
+            "http://localhost:3000/songs/10266929",
+            "http://localhost:3000/songs/10061273",
+            "http://localhost:3000/songs/10288874",
+            "http://localhost:3000/songs/10017169",
+        ]
+
+        let currentSongIndex = 0
+
         const audio = document.querySelector('audio')
+        let nextSongLoaded = false
+
+        audio.addEventListener("ended", () => {
+            currentSongIndex++
+            audio.src = playlist[currentSongIndex]
+            nextSongLoaded = false
+            audio.play()
+        })
+
+        audio.addEventListener("timeupdate", (e) => {
+            if (audio.duration - audio.currentTime < 5 && !nextSongLoaded) {
+                const nextSong = new Audio(playlist[currentSongIndex + 1])
+                nextSong.load()
+                nextSongLoaded = true
+            }
+        })
 
         async function loadFreshAlbums() {
             const response = await fetch('http://localhost:3000/albums')
@@ -85,6 +113,15 @@
         async function loadHomepageSongs() {
             const response = await fetch('http://localhost:3000/songs')
             const songs = await response.json()
+            songs.fresh.map(song => {
+                const li = document.createElement('li')
+                li.textContent = song.title
+                li.onclick = () => {
+                    audio.src = `http://localhost:3000/songs/${song.id}`
+                    audio.play()
+                }
+                document.querySelector('#songList').appendChild(li)
+            })
             console.log("Homepage songs: ", songs)
         }
 
@@ -92,6 +129,12 @@
             const response = await fetch('http://localhost:3000/albums/1369')
             const album = await response.json()
             console.log("Album 1369: ", album)
+        }
+
+        async function loadArtistData() {
+            const response = await fetch("http://localhost:3000/artists/35998")
+            const artist = await response.json()
+            console.log("Artist: ", artist)
         }
 
         async function loadSearchResults() {

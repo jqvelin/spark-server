@@ -1,5 +1,6 @@
 import { Album } from "../../types/album/album.types"
 import { Artist } from "../../types/artist/artist.types"
+import { artistSchema } from "../../types/artist/artistSchema"
 import { Song } from "../../types/song/song.types"
 import { parseAlbumDataFromElement } from "./parseAlbumDataFromElement"
 import { parseSongDataFromElement } from "./parseSongDataFromElement"
@@ -36,10 +37,11 @@ export const parseArtistDataFromElement = (element: Element): Omit<Artist, "id">
         })
     }
     
-    return {
+    // Id is not present in DOM, but comes from parental method
+    return artistSchema.omit({ id: true }).parse({
         name,
         imageSrc,
         songs,
         albums
-    }
+    })
 }
