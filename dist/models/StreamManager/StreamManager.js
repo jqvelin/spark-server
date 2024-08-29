@@ -41,12 +41,20 @@ const stream = __importStar(require("stream"));
 class StreamManager {
     constructor() {
         this.BASE_URL = "https://dl2.mp3party.net/online";
+        this.currentRequest = null;
     }
     stream(songId, range, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (this.currentRequest) {
+                this.currentRequest.cancel("New request initiated.");
+            }
+            const CancelToken = axios_1.default.CancelToken;
+            const source = CancelToken.source();
+            this.currentRequest = source;
             try {
                 const response = yield axios_1.default.get(`${this.BASE_URL}/${songId}.mp3`, {
-                    responseType: 'arraybuffer',
+                    responseType: "arraybuffer",
+                    cancelToken: source.token,
                 });
                 const audioBuffer = Buffer.from(response.data);
                 const audioLength = audioBuffer.length;
@@ -65,7 +73,15 @@ class StreamManager {
                 audioStream.pipe(res);
             }
             catch (error) {
-                res.status(500).send('Error fetching audio');
+                if (axios_1.default.isCancel(error)) {
+                    console.log("Previous request canceled: ", error.message);
+                }
+                else {
+                    res.status(500).send("Error fetching audio");
+                }
+            }
+            finally {
+                this.currentRequest = null;
             }
         });
     }

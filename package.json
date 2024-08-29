@@ -1,7 +1,7 @@
 {
   "name": "spark-server",
   "version": "1.0.0",
-  "main": "src/main.ts",
+  "main": "src/index.ts",
   "scripts": {
     "test": "jest",
     "dev": "tsx watch src/main.ts"
