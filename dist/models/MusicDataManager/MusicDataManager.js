@@ -20,7 +20,7 @@ const parseAlbumDataFromElement_1 = require("./utils/parsing/parseAlbumDataFromE
 const parseArtistDataFromElement_1 = require("./utils/parsing/parseArtistDataFromElement");
 class MusicDataManager {
     constructor() {
-        this.BASE_URL = "https://mp3party.net/";
+        this.BASE_URL = "https://mp3party.net";
     }
     getHomepageSongs() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -74,13 +74,35 @@ class MusicDataManager {
     }
     getArtistDataById(artistId) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             try {
+                let artist = {
+                    id: artistId,
+                    name: "",
+                    imageSrc: "",
+                    songs: [],
+                    albums: []
+                };
                 const html = yield axios_1.default.get(`${this.BASE_URL}/artist/${artistId}`);
                 const dom = (0, domParser_1.domParser)(html.data);
-                const artistElement = dom === null || dom === void 0 ? void 0 : dom.querySelector(".artist-page.page");
-                if (!artistElement)
-                    return;
-                const artist = Object.assign(Object.assign({}, (0, parseArtistDataFromElement_1.parseArtistDataFromElement)(artistElement)), { id: artistId });
+                const pagesToParseQty = (dom === null || dom === void 0 ? void 0 : dom.querySelectorAll("div[role='navigation'] .btn").length)
+                    ? (dom === null || dom === void 0 ? void 0 : dom.querySelectorAll("div[role='navigation'] .btn").length) - 2
+                    : 1;
+                let artistDataRequests = [];
+                // Fetch is used here because of axios bug related to parsing circular structures
+                // https://github.com/axios/axios/issues/836
+                for (let i = 1; i <= pagesToParseQty; i++) {
+                    artistDataRequests.push(fetch(`${this.BASE_URL}/artist/${artistId}?page=${i}`).then(r => r.text()));
+                }
+                const artistResponses = yield Promise.all(artistDataRequests);
+                for (let i = 0; i < artistResponses.length; i++) {
+                    const artistResponse = artistResponses[i];
+                    const artistElement = (_a = (0, domParser_1.domParser)(artistResponse)) === null || _a === void 0 ? void 0 : _a.querySelector(".artist-page.page");
+                    if (!artistElement)
+                        continue;
+                    const parsedArtistPageData = (0, parseArtistDataFromElement_1.parseArtistDataFromElement)(artistElement);
+                    artist = Object.assign(Object.assign(Object.assign({}, artist), parsedArtistPageData), { songs: [...artist.songs, ...parsedArtistPageData.songs] });
+                }
                 return artist;
             }
             catch (e) {

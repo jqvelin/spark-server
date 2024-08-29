@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseArtistDataFromElement = void 0;
+const artistSchema_1 = require("../../types/artist/artistSchema");
 const parseAlbumDataFromElement_1 = require("./parseAlbumDataFromElement");
 const parseSongDataFromElement_1 = require("./parseSongDataFromElement");
 const parseArtistDataFromElement = (element) => {
@@ -29,11 +30,12 @@ const parseArtistDataFromElement = (element) => {
         const album = (0, parseAlbumDataFromElement_1.parseAlbumDataFromElement)(albumElements[i]);
         albums.push(Object.assign({ id: (_e = (_d = albumElements[i].querySelector("a.album-card__image")) === null || _d === void 0 ? void 0 : _d.getAttribute("href")) === null || _e === void 0 ? void 0 : _e.slice(8) }, album));
     }
-    return {
+    // Id is not present in DOM, but comes from parental method
+    return artistSchema_1.artistSchema.omit({ id: true }).parse({
         name,
         imageSrc,
         songs,
         albums
-    };
+    });
 };
 exports.parseArtistDataFromElement = parseArtistDataFromElement;

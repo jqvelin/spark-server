@@ -30,6 +30,7 @@ const parseAlbumDataFromElement = (element) => {
             continue;
         genres.push(genre);
     }
+    // Id is not present in DOM, but comes from parental method
     return albumSchema_1.albumSchema.omit({ id: true }).parse({
         title,
         artist,
