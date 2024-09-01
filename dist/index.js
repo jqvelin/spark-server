@@ -2,7 +2,9 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
+require("dotenv/config");
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const songsRouter_1 = require("./models/Routers/songsRouter");
@@ -15,6 +17,7 @@ app.use('/artists', artistsRouter_1.artistsRouter);
 app.use('/songs', songsRouter_1.songsRouter);
 app.use('/albums', albumsRouter_1.albumsRouter);
 app.use('/search', searchRouter_1.searchRouter);
-app.listen(3000, () => {
-    console.log('Running on port 3000');
+const port = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 4000;
+app.listen(port, () => {
+    console.log(`Running on port ${port}`);
 });

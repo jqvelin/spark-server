@@ -1,3 +1,4 @@
+import "dotenv/config"
 import express from "express";
 import cors from "cors"
 import { songsRouter } from "./models/Routers/songsRouter";
@@ -13,6 +14,8 @@ app.use('/songs', songsRouter)
 app.use('/albums', albumsRouter)
 app.use('/search', searchRouter)
 
-app.listen(3000, () => {
-  console.log('Running on port 3000');
+const port = process.env.PORT ?? 4000
+
+app.listen(port, () => {
+  console.log(`Running on port ${port}`);
 });
