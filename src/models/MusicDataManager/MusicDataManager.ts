@@ -71,9 +71,10 @@ export class MusicDataManager {
             }
             const html = await axios.get(`${this.BASE_URL}/artist/${artistId}`)
             const dom = domParser(html.data)
-            const pagesToParseQty = dom?.querySelectorAll("div[role='navigation'] .btn").length 
-                ? dom?.querySelectorAll("div[role='navigation'] .btn").length - 2 
-                : 1
+            const pagesToParseQty = parseInt(
+                dom?.querySelectorAll("div[role='navigation'] .btn")[dom?.querySelectorAll("div[role='navigation'] .btn").length - 2]
+                .textContent ?? "1"
+            )
 
             let artistDataRequests = []
 
