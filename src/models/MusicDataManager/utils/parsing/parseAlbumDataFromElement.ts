@@ -7,7 +7,7 @@ export const parseAlbumDataFromElement = (element: Element): Omit<Album, "id"> =
     const albumCardId = element.querySelector("a.album-card__image")?.getAttribute("href")?.slice(8)
     // Checking if it's an album card that should lead to album page, so there is no need to fetch it's content
     if (albumCardId) {
-        const coverSrc = element.querySelector("img.album-card__image")?.getAttribute("src") 
+        const coverSrc = element.querySelector("img.album-card__image")?.getAttribute("src")?.replace("350x100", "100x100")
         const title = element.querySelector(".album-card__title")?.textContent?.trim()
         const artist = element.querySelector(".album-card__author a")?.textContent?.trim()
         const artistId = element.querySelector(".album-card__author a")?.getAttribute("href")?.slice(8).trim()
@@ -17,7 +17,7 @@ export const parseAlbumDataFromElement = (element: Element): Omit<Album, "id"> =
     const title = element.querySelector(".page__title.page__title_album")?.textContent?.trim() as string
     const artist = element.querySelector(".same-artist__item a")?.textContent?.trim() as string
     const artistId = element.querySelector(".same-artist__item a")?.getAttribute("href")?.slice(8).trim() as string
-    const coverSrc = element.querySelector("img.page__img")?.getAttribute("src") as string
+    const coverSrc = element.querySelector("img.page__img")?.getAttribute("src")?.replace("350x100", "400x400")
 
     const songs: Song[] = []
     
