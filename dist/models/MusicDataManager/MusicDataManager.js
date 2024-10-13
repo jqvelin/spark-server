@@ -74,7 +74,7 @@ class MusicDataManager {
     }
     getArtistDataById(artistId) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a;
+            var _a, _b, _c;
             try {
                 let artist = {
                     id: artistId,
@@ -84,10 +84,10 @@ class MusicDataManager {
                     albums: []
                 };
                 const html = yield axios_1.default.get(`${this.BASE_URL}/artist/${artistId}`);
+                console.log("before");
                 const dom = (0, domParser_1.domParser)(html.data);
-                const pagesToParseQty = (dom === null || dom === void 0 ? void 0 : dom.querySelectorAll("div[role='navigation'] .btn").length)
-                    ? (dom === null || dom === void 0 ? void 0 : dom.querySelectorAll("div[role='navigation'] .btn").length) - 2
-                    : 1;
+                console.log("dom");
+                const pagesToParseQty = parseInt((_b = (_a = dom === null || dom === void 0 ? void 0 : dom.querySelectorAll("div[role='navigation'] .btn")[(dom === null || dom === void 0 ? void 0 : dom.querySelectorAll("div[role='navigation'] .btn").length) - 2]) === null || _a === void 0 ? void 0 : _a.textContent) !== null && _b !== void 0 ? _b : "1");
                 let artistDataRequests = [];
                 // Fetch is used here because of axios bug related to parsing circular structures
                 // https://github.com/axios/axios/issues/836
@@ -97,7 +97,7 @@ class MusicDataManager {
                 const artistResponses = yield Promise.all(artistDataRequests);
                 for (let i = 0; i < artistResponses.length; i++) {
                     const artistResponse = artistResponses[i];
-                    const artistElement = (_a = (0, domParser_1.domParser)(artistResponse)) === null || _a === void 0 ? void 0 : _a.querySelector(".artist-page.page");
+                    const artistElement = (_c = (0, domParser_1.domParser)(artistResponse)) === null || _c === void 0 ? void 0 : _c.querySelector(".artist-page.page");
                     if (!artistElement)
                         continue;
                     const parsedArtistPageData = (0, parseArtistDataFromElement_1.parseArtistDataFromElement)(artistElement);
