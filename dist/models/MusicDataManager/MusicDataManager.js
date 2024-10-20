@@ -84,9 +84,7 @@ class MusicDataManager {
                     albums: []
                 };
                 const html = yield axios_1.default.get(`${this.BASE_URL}/artist/${artistId}`);
-                console.log("before");
                 const dom = (0, domParser_1.domParser)(html.data);
-                console.log("dom");
                 const pagesToParseQty = parseInt((_b = (_a = dom === null || dom === void 0 ? void 0 : dom.querySelectorAll("div[role='navigation'] .btn")[(dom === null || dom === void 0 ? void 0 : dom.querySelectorAll("div[role='navigation'] .btn").length) - 2]) === null || _a === void 0 ? void 0 : _a.textContent) !== null && _b !== void 0 ? _b : "1");
                 let artistDataRequests = [];
                 // Fetch is used here because of axios bug related to parsing circular structures
