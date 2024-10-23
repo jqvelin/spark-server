@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios, { AxiosResponse } from "axios"
 import { Song, SongGroups, SongGroupTitles } from "./types/song/song.types"
 import { parseSongDataFromElement } from "./utils/parsing/parseSongDataFromElement"
 import { domParser } from "../../lib/domParser"
@@ -148,15 +148,24 @@ export class MusicDataManager {
             }
 
             const artistElements = dom?.querySelectorAll(".artist-item a")
+
             if (!artistElements) return
 
             let artistDataRequests = []
             for (let i = 0; i < artistElements?.length; i++) {
                 artistDataRequests.push(axios.get(this.BASE_URL + artistElements[i].getAttribute("href")))
             }
-            const artistResponses = await Promise.all(artistDataRequests)
+
+            /* 
+             Promise.allSettled instead of Promise.all is used here
+             because of external service bug:
+             some links lead to 404 pages, therefore they are skipped
+            */
+            const artistResponses = await Promise.allSettled(artistDataRequests)
+            
             for (let i = 0; i < artistResponses.length; i++) {
-                const artistResponseData = artistResponses[i].data
+                if (artistResponses[i].status === "rejected") continue
+                const artistResponseData = (artistResponses[i] as PromiseFulfilledResult<AxiosResponse<any, any>>).value.data
                 const artistElement = domParser(artistResponseData)?.querySelector(".artist-page.page")
                 if (!artistElement) continue
                 const artist = parseArtistDataFromElement(artistElement)
@@ -170,7 +179,7 @@ export class MusicDataManager {
 
             const albumElementsContainer = dom?.querySelectorAll(".col-xs-12")[dom?.querySelectorAll(".col-xs-12").length - 1]
             if (!albumElementsContainer) return
-
+            
             const albumElements = albumElementsContainer?.querySelectorAll(".collection-item a")
             let albumDataRequests = []
             for (let i = 0; i < albumElements?.length; i++) {
