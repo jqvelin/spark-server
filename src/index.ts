@@ -5,14 +5,17 @@ import { songsRouter } from "./models/Routers/songsRouter";
 import { albumsRouter } from "./models/Routers/albumsRouter";
 import { searchRouter } from "./models/Routers/searchRouter";
 import { artistsRouter } from "./models/Routers/artistsRouter";
+import { playlistsRouter } from "./models/Routers/playlistsRouter";
 
 const app = express();
 app.use(cors())
+app.use(express.json())
 
 app.use('/artists', artistsRouter)
 app.use('/songs', songsRouter)
 app.use('/albums', albumsRouter)
 app.use('/search', searchRouter)
+app.use('/playlists', playlistsRouter)
 
 const port = process.env.PORT ?? 4000
 

@@ -4,9 +4,9 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "jest",
-    "dev": "tsx watch src/index.ts",
+    "dev": "concurrently \"tsx watch src/index.ts\" \"json-server playlists_db.json -p 3001\"",
     "build": "npx tsc -b",
-    "start": "node dist/index.js"
+    "start": "concurrently \"node dist/index.js\" \"json-server playlists_db.json -p 3001\""
   },
   "keywords": [],
   "author": "",
@@ -14,10 +14,12 @@
   "description": "",
   "dependencies": {
     "axios": "^1.7.4",
+    "concurrently": "^9.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsdom": "^24.1.1",
+    "json-server": "^1.0.0-beta.3",
     "zod": "^3.23.8"
   },
   "devDependencies": {

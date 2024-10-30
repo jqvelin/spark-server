@@ -149,9 +149,16 @@ class MusicDataManager {
                 for (let i = 0; i < (artistElements === null || artistElements === void 0 ? void 0 : artistElements.length); i++) {
                     artistDataRequests.push(axios_1.default.get(this.BASE_URL + artistElements[i].getAttribute("href")));
                 }
-                const artistResponses = yield Promise.all(artistDataRequests);
+                /*
+                 Promise.allSettled instead of Promise.all is used here
+                 because of external service bug:
+                 some links lead to 404 pages, therefore they are skipped
+                */
+                const artistResponses = yield Promise.allSettled(artistDataRequests);
                 for (let i = 0; i < artistResponses.length; i++) {
-                    const artistResponseData = artistResponses[i].data;
+                    if (artistResponses[i].status === "rejected")
+                        continue;
+                    const artistResponseData = artistResponses[i].value.data;
                     const artistElement = (_a = (0, domParser_1.domParser)(artistResponseData)) === null || _a === void 0 ? void 0 : _a.querySelector(".artist-page.page");
                     if (!artistElement)
                         continue;
@@ -186,6 +193,11 @@ class MusicDataManager {
             catch (e) {
                 return null;
             }
+        });
+    }
+    addPlaylistToUserPlaylists(playlist) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return axios_1.default.post(`${process.env.DB_BASE_API}/playlists`, playlist);
         });
     }
 }

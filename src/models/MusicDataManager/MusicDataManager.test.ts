@@ -1,5 +1,9 @@
 import { describe, expect, test } from "@jest/globals";
 import { MusicDataManager } from "./MusicDataManager"
+import { Playlist } from "./types/playlist/playlist.types";
+import "dotenv/config"
+import axios from "axios";
+import { playlistSchema } from "./types/playlist/playlistSchema";
 
 const musicDataManager = new MusicDataManager()
 
@@ -62,5 +66,19 @@ describe("MusicDataManager happy cases", () => {
             artists: [],
             albums: []
         })
+    })
+
+    test("correctly adds playlist to user playlists", async () => {
+        const playlist: Playlist = {
+            userId: "test-user",
+            playlistId: "test-playlist",
+            title: "My playlist",
+            songs: []
+        }
+
+        await musicDataManager.addPlaylistToUserPlaylists(playlist)
+        const dbResponse = await axios.get(`${process.env.DB_BASE_API}/playlists`)
+        const playlists = playlistSchema.array().parse(dbResponse.data)
+        expect(playlists.find(playlist => playlist.playlistId === "test-playlist")).toBeDefined()
     })
 })

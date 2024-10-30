@@ -6,6 +6,7 @@ import { Album } from "./types/album/album.types"
 import { Artist } from "./types/artist/artist.types"
 import { parseAlbumDataFromElement } from "./utils/parsing/parseAlbumDataFromElement"
 import { parseArtistDataFromElement } from "./utils/parsing/parseArtistDataFromElement"
+import { Playlist } from "./types/playlist/playlist.types"
 
 export class MusicDataManager {
     BASE_URL = "https://mp3party.net"
@@ -205,5 +206,9 @@ export class MusicDataManager {
         } catch (e) {
             return null
         }
+    }
+
+    async addPlaylistToUserPlaylists(playlist: Playlist) {
+        return axios.post(`${process.env.DB_BASE_API}/playlists`, playlist)
     }
 }
