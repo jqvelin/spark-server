@@ -14,4 +14,13 @@ router.post('/add', async (req, res) => {
         res.sendStatus(500)
     }
 })
+
+router.get('/', async (_, res) => {
+    try {
+        const playlists = await musicDataManager.getUserPlaylists()
+        res.json(playlists)
+    } catch {
+        res.sendStatus(400)
+    }
+})
 export { router as playlistsRouter }

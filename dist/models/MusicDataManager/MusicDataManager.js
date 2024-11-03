@@ -18,6 +18,7 @@ const parseSongDataFromElement_1 = require("./utils/parsing/parseSongDataFromEle
 const domParser_1 = require("../../lib/domParser");
 const parseAlbumDataFromElement_1 = require("./utils/parsing/parseAlbumDataFromElement");
 const parseArtistDataFromElement_1 = require("./utils/parsing/parseArtistDataFromElement");
+const playlistSchema_1 = require("./types/playlist/playlistSchema");
 class MusicDataManager {
     constructor() {
         this.BASE_URL = "https://mp3party.net";
@@ -198,6 +199,12 @@ class MusicDataManager {
     addPlaylistToUserPlaylists(playlist) {
         return __awaiter(this, void 0, void 0, function* () {
             return axios_1.default.post(`${process.env.DB_BASE_API}/playlists`, playlist);
+        });
+    }
+    getUserPlaylists() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield axios_1.default.get(`${process.env.DB_BASE_API}/playlists`);
+            return playlistSchema_1.playlistSchema.array().parse(response.data);
         });
     }
 }

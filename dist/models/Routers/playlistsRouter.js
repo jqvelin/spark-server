@@ -29,3 +29,12 @@ router.post('/add', (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.sendStatus(500);
     }
 }));
+router.get('/', (_, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const playlists = yield musicDataManager.getUserPlaylists();
+        res.json(playlists);
+    }
+    catch (_a) {
+        res.sendStatus(400);
+    }
+}));
