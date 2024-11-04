@@ -196,15 +196,25 @@ class MusicDataManager {
             }
         });
     }
-    addPlaylistToUserPlaylists(playlist) {
+    addPlaylist(playlist) {
         return __awaiter(this, void 0, void 0, function* () {
             return axios_1.default.post(`${process.env.DB_BASE_API}/playlists`, playlist);
         });
     }
-    getUserPlaylists() {
+    getPlaylists(queryParams) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield axios_1.default.get(`${process.env.DB_BASE_API}/playlists`);
+            const response = yield axios_1.default.get(`${process.env.DB_BASE_API}/playlists?${queryParams}`);
             return playlistSchema_1.playlistSchema.array().parse(response.data);
+        });
+    }
+    patchPlaylist(playlist) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return axios_1.default.patch(`${process.env.DB_BASE_API}/playlists/${playlist.id}`, playlist);
+        });
+    }
+    removePlaylist(playlistId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return axios_1.default.delete(`${process.env.DB_BASE_API}/playlists/${playlistId}`);
         });
     }
 }

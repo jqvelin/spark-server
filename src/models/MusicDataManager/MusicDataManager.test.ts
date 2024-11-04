@@ -68,17 +68,36 @@ describe("MusicDataManager happy cases", () => {
         })
     })
 
-    test("correctly adds playlist to user playlists", async () => {
-        const playlist: Playlist = {
-            userId: "test-user",
-            playlistId: "test-playlist",
-            title: "My playlist",
-            songs: []
-        }
+    const playlist: Playlist = {
+        userId: "test-user",
+        id: "test-playlist",
+        title: "My playlist",
+        songs: []
+    }
 
-        await musicDataManager.addPlaylistToUserPlaylists(playlist)
+    test("correctly gets playlist data", async () => {
+        const playlists = await musicDataManager.getPlaylists()
+        expect(Array.isArray(playlists)).toBe(true)
+    })
+
+    test("correctly adds playlist to user playlists", async () => {
+        await musicDataManager.addPlaylist(playlist)
         const dbResponse = await axios.get(`${process.env.DB_BASE_API}/playlists`)
         const playlists = playlistSchema.array().parse(dbResponse.data)
-        expect(playlists.find(playlist => playlist.playlistId === "test-playlist")).toBeDefined()
+        expect(playlists.find(playlist => playlist.id === "test-playlist")).toBeDefined()
+    })
+    
+    test("correctly adds songs to playlist", async () => {
+        await musicDataManager.patchPlaylist({...playlist, songs: [...playlist.songs, {id: "test-song", title: "test song title", artist: "test artist", duration: "01:00"}]})
+        const dbResponse = await axios.get(`${process.env.DB_BASE_API}/playlists`)
+        const playlists = playlistSchema.array().parse(dbResponse.data)
+        expect(playlists.find(playlist => playlist.id === "test-playlist")?.songs.find(song => song.id === "test-song")).toBeDefined()
+    })
+
+    test("correctly removes playlists", async () => {
+        await musicDataManager.removePlaylist(playlist.id)
+        const dbResponse = await axios.get(`${process.env.DB_BASE_API}/playlists`)
+        const playlists = playlistSchema.array().parse(dbResponse.data)
+        expect(playlists.find(playlist => playlist.id === "test-playlist")).not.toBeDefined()
     })
 })

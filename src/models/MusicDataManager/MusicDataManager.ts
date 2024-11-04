@@ -209,12 +209,20 @@ export class MusicDataManager {
         }
     }
 
-    async addPlaylistToUserPlaylists(playlist: Playlist) {
+    async addPlaylist(playlist: Omit<Playlist, "id">) {
         return axios.post(`${process.env.DB_BASE_API}/playlists`, playlist)
     }
 
-    async getUserPlaylists() {
-        const response = await axios.get(`${process.env.DB_BASE_API}/playlists`)
+    async getPlaylists(queryParams?: string) {
+        const response = await axios.get(`${process.env.DB_BASE_API}/playlists?${queryParams}`)
         return playlistSchema.array().parse(response.data)
+    }
+
+    async patchPlaylist(playlist: Playlist) {
+        return axios.patch(`${process.env.DB_BASE_API}/playlists/${playlist.id}`, playlist)
+    }
+
+    async removePlaylist(playlistId: Playlist["id"]) {
+        return axios.delete(`${process.env.DB_BASE_API}/playlists/${playlistId}`)
     }
 }

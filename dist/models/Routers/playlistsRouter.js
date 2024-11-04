@@ -21,20 +21,41 @@ exports.playlistsRouter = router;
 const musicDataManager = new MusicDataManager_1.MusicDataManager();
 router.post('/add', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const playlist = playlistSchema_1.playlistSchema.parse(req.body);
-        const response = yield musicDataManager.addPlaylistToUserPlaylists(playlist);
+        const playlist = playlistSchema_1.playlistSchema.omit({ id: true }).parse(req.body);
+        const response = yield musicDataManager.addPlaylist(playlist);
         res.sendStatus(response.status);
     }
     catch (_a) {
         res.sendStatus(500);
     }
 }));
-router.get('/', (_, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const playlists = yield musicDataManager.getUserPlaylists();
+        const searchParams = new URLSearchParams(req.query).toString();
+        const playlists = yield musicDataManager.getPlaylists(searchParams);
         res.json(playlists);
     }
     catch (_a) {
         res.sendStatus(400);
+    }
+}));
+router.patch("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const playlist = playlistSchema_1.playlistSchema.parse(req.body);
+        const response = yield musicDataManager.patchPlaylist(playlist);
+        res.sendStatus(response.status);
+    }
+    catch (_a) {
+        res.sendStatus(500);
+    }
+}));
+router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const playlistId = req.params.id;
+        const response = yield musicDataManager.removePlaylist(playlistId);
+        res.sendStatus(response.status);
+    }
+    catch (_a) {
+        res.sendStatus(500);
     }
 }));

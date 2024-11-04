@@ -1,3 +1,41 @@
 {
-  "playlists": []
+  "playlists": [
+    {
+      "id": "54a4",
+      "userId": "557476424",
+      "title": "asd",
+      "description": "",
+      "songs": [
+        {
+          "id": "11188477",
+          "coverSrc": "https://mp3party.net//system/artists/imgs/000/025/25558/micro/micro_5477656e7479204f6e652050696c6f74732d2d323031382d31312d32392030383a32363a3037202b30333030.jpg",
+          "title": "The Line (Soundtrack from the Animated Series) (by Arcane & League of Legends Music)",
+          "artist": "Twenty one pilots",
+          "duration": "03:12"
+        }
+      ]
+    },
+    {
+      "id": "dd4a",
+      "userId": "557476424",
+      "title": "asdasd",
+      "description": "",
+      "songs": [
+        {
+          "id": "11185959",
+          "coverSrc": "https://mp3party.net//system/artists/imgs/000/000/10/micro/micro_1000x1000.png",
+          "title": "Disease",
+          "artist": "Lady Gaga",
+          "duration": "03:49"
+        },
+        {
+          "id": "11188477",
+          "coverSrc": "https://mp3party.net//system/artists/imgs/000/025/25558/micro/micro_5477656e7479204f6e652050696c6f74732d2d323031382d31312d32392030383a32363a3037202b30333030.jpg",
+          "title": "The Line (Soundtrack from the Animated Series) (by Arcane & League of Legends Music)",
+          "artist": "Twenty one pilots",
+          "duration": "03:12"
+        }
+      ]
+    }
+  ]
 }
