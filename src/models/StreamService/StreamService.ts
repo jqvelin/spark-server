@@ -2,9 +2,31 @@ import axios, { CancelTokenSource } from "axios";
 import type { Response } from "express";
 import * as stream from "stream";
 
-export class StreamManager {
+export class StreamService {
   BASE_URL = "https://dl2.mp3party.net/online";
   currentRequest: CancelTokenSource | null = null;
+
+  async handleDownload({songId, artist, title, res}: 
+    {songId: string, artist: string, title: string, res: Response}) {
+        const url = `https://dl2.mp3party.net/download/${songId}`
+        const filename = encodeURIComponent(`${artist} - ${title}.mp3`)
+        try {
+            const response = await axios.get(url, {
+                responseType: 'stream',
+                headers: {
+                    'User-Agent': 'Mozilla/5.0', // Mimic a browser or app header
+                },
+            });
+    
+            res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+            res.setHeader('Content-Type', 'audio/mpeg');
+            
+            response.data.pipe(res);
+        } catch (error) {
+            console.error("Download failed:", error);
+            res.status(500).send("Download failed");
+        }
+}
 
   async stream(songId: string, range: string, res: Response) {
     if (this.currentRequest) {

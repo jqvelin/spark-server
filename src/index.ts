@@ -6,6 +6,7 @@ import { albumsRouter } from "./models/Routers/albumsRouter";
 import { searchRouter } from "./models/Routers/searchRouter";
 import { artistsRouter } from "./models/Routers/artistsRouter";
 import { playlistsRouter } from "./models/Routers/playlistsRouter";
+import { downloadRouter } from "./models/Routers/downloadRouter";
 
 const app = express();
 app.use(cors())
@@ -16,6 +17,7 @@ app.use('/songs', songsRouter)
 app.use('/albums', albumsRouter)
 app.use('/search', searchRouter)
 app.use('/playlists', playlistsRouter)
+app.use('/download', downloadRouter)
 
 const port = process.env.PORT ?? 4000
 

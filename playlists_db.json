@@ -1,39 +1,31 @@
 {
   "playlists": [
     {
-      "id": "54a4",
+      "id": "9b38",
       "userId": "557476424",
-      "title": "asd",
+      "title": "my playlist",
       "description": "",
       "songs": [
         {
-          "id": "11188477",
-          "coverSrc": "https://mp3party.net//system/artists/imgs/000/025/25558/micro/micro_5477656e7479204f6e652050696c6f74732d2d323031382d31312d32392030383a32363a3037202b30333030.jpg",
-          "title": "The Line (Soundtrack from the Animated Series) (by Arcane & League of Legends Music)",
-          "artist": "Twenty one pilots",
-          "duration": "03:12"
-        }
-      ]
-    },
-    {
-      "id": "dd4a",
-      "userId": "557476424",
-      "title": "asdasd",
-      "description": "",
-      "songs": [
-        {
-          "id": "11185959",
-          "coverSrc": "https://mp3party.net//system/artists/imgs/000/000/10/micro/micro_1000x1000.png",
-          "title": "Disease",
-          "artist": "Lady Gaga",
-          "duration": "03:49"
+          "id": "10533089",
+          "coverSrc": null,
+          "title": "Гонк-Конг",
+          "artist": "Unik & Gara",
+          "duration": "03:19"
         },
         {
-          "id": "11188477",
-          "coverSrc": "https://mp3party.net//system/artists/imgs/000/025/25558/micro/micro_5477656e7479204f6e652050696c6f74732d2d323031382d31312d32392030383a32363a3037202b30333030.jpg",
-          "title": "The Line (Soundtrack from the Animated Series) (by Arcane & League of Legends Music)",
-          "artist": "Twenty one pilots",
-          "duration": "03:12"
+          "id": "10107038",
+          "coverSrc": "https://mp3party.net//system/artists/imgs/000/006/6248/micro/micro_d09cd0bed18f20d09cd0b8d188d0b5d0bbd18c2d2d323031382d31322d30322030393a31353a3237202b30333030.jpg",
+          "title": "Зима в сердце",
+          "artist": "Моя Мишель",
+          "duration": "04:05"
+        },
+        {
+          "id": "9927408",
+          "coverSrc": "https://mp3party.net//system/artists/imgs/005/071/5071081/micro/micro_1000x1000.jpeg",
+          "title": "November (prod. Fantom)",
+          "artist": "Toxi$",
+          "duration": "02:49"
         }
       ]
     }

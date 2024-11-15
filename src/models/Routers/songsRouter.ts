@@ -1,10 +1,10 @@
 import { MusicDataManager } from "../MusicDataManager/MusicDataManager"
 import express from "express"
-import { StreamManager } from "../StreamManager/StreamManager"
+import { StreamService } from "../StreamService/StreamService"
 const router = express.Router()
 
 const musicDataManager = new MusicDataManager()
-const streamManager = new StreamManager()
+const streamManager = new StreamService()
 
 router.get('/', async (_, res) => {
     const songs = await musicDataManager.getHomepageSongs()
