@@ -18,14 +18,14 @@ export class MusicDataManager {
             const dom = domParser(html.data)
             const songGroups: SongGroups = {
                 fresh: [],
-                trendingGlobal: [],
+                trendingWorldwide: [],
                 bestOfToday: [],
                 trendingRussia: []
             }
     
             const songSectionElements = dom?.querySelectorAll(".playlist")
             if (!songSectionElements) return 
-            const songSectionIndices: SongGroupTitles = ["fresh", "bestOfToday", "trendingGlobal", "trendingRussia"]
+            const songSectionIndices: SongGroupTitles = ["fresh", "bestOfToday", "trendingWorldwide", "trendingRussia"]
             
             for (let i = 0; i < songSectionIndices.length; i++) {
                 const [songSectionTitle, songSectionElement] = [songSectionIndices[i], songSectionElements[i]]

@@ -5,7 +5,7 @@ export type Song = z.infer<typeof songSchema>
 
 export type SongGroups = {
     fresh: Song[],
-    trendingGlobal: Song[],
+    trendingWorldwide: Song[],
     bestOfToday: Song[],
     trendingRussia: Song[]
 }

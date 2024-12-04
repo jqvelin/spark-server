@@ -1,32 +1,3 @@
 {
-  "playlists": [
-    {
-      "id": "831d",
-      "userId": "557476424",
-      "title": "playlist number two",
-      "description": "test",
-      "songs": []
-    },
-    {
-      "id": "d9d0",
-      "userId": "557476424",
-      "title": "playlist#1",
-      "description": "description",
-      "songs": []
-    },
-    {
-      "id": "c536",
-      "userId": "557476424",
-      "title": "asd",
-      "description": "",
-      "songs": []
-    },
-    {
-      "id": "a76f",
-      "userId": "557476424",
-      "title": "asdsad",
-      "description": "",
-      "songs": []
-    }
-  ]
+  "playlists": []
 }
