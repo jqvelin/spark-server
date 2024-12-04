@@ -29,18 +29,8 @@ export class StreamService {
 }
 
   async stream(songId: string, range: string, res: Response) {
-    if (this.currentRequest) {
-      this.currentRequest.cancel("New request initiated.");
-    }
-
-    const CancelToken = axios.CancelToken;
-    const source = CancelToken.source();
-    this.currentRequest = source;
-
-    try {
       const response = await axios.get(`${this.BASE_URL}/${songId}.mp3`, {
         responseType: "arraybuffer",
-        cancelToken: source.token,
       });
 
       const audioBuffer = Buffer.from(response.data);
@@ -61,14 +51,6 @@ export class StreamService {
       const audioStream = new stream.PassThrough();
       audioStream.end(audioBuffer.slice(startByte, endByte + 1));
       audioStream.pipe(res);
-    } catch (error) {
-      if (axios.isCancel(error)) {
-        console.log("Previous request canceled: ", error.message);
-      } else {
-        res.status(500).send("Error fetching audio");
-      }
-    } finally {
-      this.currentRequest = null;
-    }
+    
   }
 }
