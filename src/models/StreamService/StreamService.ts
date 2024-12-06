@@ -14,7 +14,7 @@ export class StreamService {
             const response = await axios.get(url, {
                 responseType: 'stream',
                 headers: {
-                    'User-Agent': 'Mozilla/5.0', // Mimic a browser or app header
+                    'User-Agent': 'Mozilla/5.0',
                 },
             });
     
@@ -31,6 +31,9 @@ export class StreamService {
   async stream(songId: string, range: string, res: Response) {
       const response = await axios.get(`${this.BASE_URL}/${songId}.mp3`, {
         responseType: "arraybuffer",
+        headers: {
+          "User-Agent": "Mozilla/5.0"
+        }
       });
 
       const audioBuffer = Buffer.from(response.data);

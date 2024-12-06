@@ -14,7 +14,9 @@ export class MusicDataManager {
 
     async getHomepageSongs(): Promise<SongGroups | null | undefined> {
         try {
-            const html = await axios.get(this.BASE_URL)
+            const html = await axios.get(this.BASE_URL, {headers: {
+                "User-Agent": "Mozilla/5.0"
+            }})
             const dom = domParser(html.data)
             const songGroups: SongGroups = {
                 fresh: [],
@@ -44,7 +46,9 @@ export class MusicDataManager {
 
     async getFreshAlbums(): Promise<Album[] | null | undefined> {
         try {
-            const html = await axios.get(this.BASE_URL)
+            const html = await axios.get(this.BASE_URL, {headers: {
+                "User-Agent": "Mozilla/5.0"
+            }})
             const dom = domParser(html.data)
             const albums: Album[] = []
     
@@ -71,7 +75,9 @@ export class MusicDataManager {
                 songs: [],
                 albums: []
             }
-            const html = await axios.get(`${this.BASE_URL}/artist/${artistId}`)
+            const html = await axios.get(`${this.BASE_URL}/artist/${artistId}`, {headers: {
+                "User-Agent": "Mozilla/5.0"
+            }})
             const dom = domParser(html.data)
             const pagesToParseQty = parseInt(
                 dom?.querySelectorAll("div[role='navigation'] .btn")[dom?.querySelectorAll("div[role='navigation'] .btn").length - 2]
@@ -83,7 +89,9 @@ export class MusicDataManager {
             // Fetch is used here because of axios bug related to parsing circular structures
             // https://github.com/axios/axios/issues/836
             for (let i = 1; i <= pagesToParseQty; i++) {
-                artistDataRequests.push(fetch(`${this.BASE_URL}/artist/${artistId}?page=${i}`).then(r => r.text()))
+                artistDataRequests.push(fetch(`${this.BASE_URL}/artist/${artistId}?page=${i}`, {headers: {
+                    "User-Agent": "Mozilla/5.0"
+                }}).then(r => r.text()))
             }
 
             const artistResponses = await Promise.all(artistDataRequests)
@@ -108,7 +116,9 @@ export class MusicDataManager {
 
     async getAlbumDataById(albumId: string): Promise<Album | null | undefined> {
         try {
-            const html = await axios.get(`${this.BASE_URL}/albums/${albumId}`)
+            const html = await axios.get(`${this.BASE_URL}/albums/${albumId}`, {headers: {
+                "User-Agent": "Mozilla/5.0"
+            }})
             const dom = domParser(html.data)
             const albumElement = dom?.querySelector(".page.page_album")
             if (!albumElement) return
@@ -129,7 +139,9 @@ export class MusicDataManager {
         artists: Artist[]
     } | null | undefined> {
         try {
-            const html = await axios.get(`${this.BASE_URL}/search?q=${searchQuery}`)
+            const html = await axios.get(`${this.BASE_URL}/search?q=${searchQuery}`, {headers: {
+                "User-Agent": "Mozilla/5.0"
+            }})
             const dom = domParser(html.data)
             const songElements = dom?.querySelectorAll(".playlist .track.song-item")
             if (!songElements) return
