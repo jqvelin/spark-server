@@ -1,6 +1,7 @@
 import axios, { CancelTokenSource } from "axios";
 import type { Response } from "express";
 import * as stream from "stream";
+import { Song } from "../MusicDataManager/types/song/song.types";
 
 export class StreamService {
   BASE_URL = "https://dl2.mp3party.net/online";
@@ -8,6 +9,13 @@ export class StreamService {
 
   async handleDownload({songId, artist, title, res}: 
     {songId: string, artist: string, title: string, res: Response}) {
+        try {
+          const permissions = await getSongPermissions(songId)
+          if (!permissions[0].downloadable) throw "Not allowed to download";
+        } catch (e) {
+          return res.sendStatus(403);
+        }
+
         const url = `https://dl2.mp3party.net/download/${songId}`
         const filename = encodeURIComponent(`${artist} - ${title}.mp3`)
         try {
@@ -29,10 +37,17 @@ export class StreamService {
 }
 
   async stream(songId: string, range: string, res: Response) {
+      try {
+        const permissions = await getSongPermissions(songId)
+        if (!permissions[0].playable) throw "Not allowed to play";
+      } catch (e) {
+        return res.sendStatus(403);
+      }
+    
       const response = await axios.get(`${this.BASE_URL}/${songId}.mp3`, {
         responseType: "arraybuffer",
         headers: {
-          "User-Agent": "Mozilla/5.0"
+          "User-Agent": "Mozilla/5.0",
         }
       });
 
@@ -56,4 +71,15 @@ export class StreamService {
       audioStream.pipe(res);
     
   }
+}
+
+async function getSongPermissions(...songIds: Song["id"][]) {
+  const response = await axios.post<{id: string, downloadable: boolean, playable: boolean}[]>("https://mp3party.net/song_permissions/", {ids: songIds}, {
+    "headers": {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0",
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+    }
+  })
+  return response.data
 }
