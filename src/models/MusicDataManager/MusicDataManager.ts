@@ -12,7 +12,7 @@ import { playlistSchema } from "./types/playlist/playlistSchema"
 export class MusicDataManager {
     BASE_URL = "https://mp3party.net"
 
-    async getHomepageSongs(): Promise<SongGroups | null | undefined> {
+    async getHomepageData(): Promise<{songGroups: SongGroups, albums: Album[]} | null | undefined> {
         try {
             const html = await axios.get(this.BASE_URL, {headers: {
                 "User-Agent": "Mozilla/5.0"
@@ -24,6 +24,8 @@ export class MusicDataManager {
                 bestOfToday: [],
                 trendingRussia: []
             }
+
+            const albums = []
     
             const songSectionElements = dom?.querySelectorAll(".playlist")
             if (!songSectionElements) return 
@@ -38,20 +40,6 @@ export class MusicDataManager {
                 }
             }
 
-            return songGroups
-        } catch (e) {
-            return null
-        }
-    }
-
-    async getFreshAlbums(): Promise<Album[] | null | undefined> {
-        try {
-            const html = await axios.get(this.BASE_URL, {headers: {
-                "User-Agent": "Mozilla/5.0"
-            }})
-            const dom = domParser(html.data)
-            const albums: Album[] = []
-    
             const albumElements = dom?.querySelectorAll(".album-card")
             if (!albumElements) return 
 
@@ -60,7 +48,10 @@ export class MusicDataManager {
                 albums.push(album as Album)
             }
             
-            return albums
+            return {
+                songGroups,
+                albums
+            }
         } catch (e) {
             return null
         }
@@ -84,7 +75,7 @@ export class MusicDataManager {
                 ?.textContent ?? "1"
             )            
 
-            let artistDataRequests = []
+            const artistDataRequests = []
 
             // Fetch is used here because of axios bug related to parsing circular structures
             // https://github.com/axios/axios/issues/836

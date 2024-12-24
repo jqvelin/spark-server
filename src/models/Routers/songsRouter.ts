@@ -3,13 +3,7 @@ import express from "express"
 import { StreamService } from "../StreamService/StreamService"
 const router = express.Router()
 
-const musicDataManager = new MusicDataManager()
 const streamManager = new StreamService()
-
-router.get('/', async (_, res) => {
-    const songs = await musicDataManager.getHomepageSongs()
-    res.json(songs)
-})
 
 router.get('/:songId', async (req, res) => {
     const range = req.headers.range;

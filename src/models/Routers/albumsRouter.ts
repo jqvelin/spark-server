@@ -3,11 +3,6 @@ import express from "express"
 const router = express.Router()
 
 const musicDataManager = new MusicDataManager()
-
-router.get('/', async (_, res) => {
-    const albums = await musicDataManager.getFreshAlbums()
-    res.json(albums)
-})
   
 router.get('/:albumId', async (req, res) => {
     const albumId = req.params.albumId
