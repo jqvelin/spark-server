@@ -44,7 +44,8 @@ export class StreamService {
         return res.sendStatus(403);
       }
     
-      const response = await axios.get(`${this.BASE_URL}/${songId}.mp3`, {
+      try {
+        const response = await axios.get(`${this.BASE_URL}/${songId}.mp3`, {
         responseType: "arraybuffer",
         headers: {
           "User-Agent": "Mozilla/5.0",
@@ -69,6 +70,9 @@ export class StreamService {
       const audioStream = new stream.PassThrough();
       audioStream.end(audioBuffer.slice(startByte, endByte + 1));
       audioStream.pipe(res);
+      } catch (e) {
+        res.sendStatus(500);
+      }
     
   }
 }
