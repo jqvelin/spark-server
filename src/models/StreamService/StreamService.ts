@@ -4,7 +4,7 @@ import * as stream from "stream";
 import { Song } from "../MusicDataManager/types/song/song.types";
 
 export class StreamService {
-  BASE_URL = "https://dl2.mp3party.net/online";
+  BASE_URL = "https://dl1.mp3party.net/online";
   currentRequest: CancelTokenSource | null = null;
 
   async handleDownload({songId, artist, title, res}: 
