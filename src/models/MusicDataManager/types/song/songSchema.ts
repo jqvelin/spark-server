@@ -5,5 +5,5 @@ export const songSchema = z.object({
     coverSrc: z.string().optional().or(z.null()),
     title: z.string(),
     artist: z.string(),
-    duration: z.string()
+    duration: z.number()
 })
